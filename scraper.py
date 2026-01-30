@@ -5,10 +5,10 @@ from colorama import Fore, Style, init
 
 init()
 
-# ==== CONFIGURATION ====
-start_user_id = 53646466       # Starting user ID - counts up from this id
-item_id = 140823690        # Item ID to check for
-delay_seconds = 0.3        # Delay between requests to avoid rate limiting
+# ==== CONFIGURATION =====
+start_user_id = 44500281       # Starting user ID - counts up from this id
+item_id = 119934168        # Item ID to check for
+delay_seconds = 0.5        # Delay between requests to avoid rate limiting; Suggested Delay - 0.5
 # ========================
 
 # Output file in same folder as script
@@ -17,7 +17,7 @@ output_file2 = os.path.join(os.path.dirname(__file__), "users.txt")
 
 user_id = start_user_id
 print("\n--------------------------------------")
-print("             OpenScrape\n")
+print("            OpenScrape v2\n")
 print("https://github.com/pickledl/OpenScrape    ")
 print("--------------------------------------\n\n")
 
@@ -33,8 +33,12 @@ def check(item_id2):
             print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Rate Limit Exceeded)")
             time.sleep(5)
             return check(item_id2)
+        elif response.status_code == 403:
+            print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Hidden Inventory)")
+            time.sleep(5)
+            return False
         else:
-            print(Fore.RED + f"Error {response.status_code}")
+            print(Fore.RED + f"Error {response.status_code} {user_id}")
     else:
         data = response.json()
 
@@ -49,14 +53,18 @@ def id2user(uid):
     response = requests.get(url, timeout=5)
     if response.status_code != 200:
         if response.status_code == 400:
-            print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (User Terminated)")
+            print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (User Terminated) how did you even get this error")
             return False
         elif response.status_code == 429:
             print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Rate Limit Exceeded)")
             time.sleep(5)
             return id2user(uid)
+        elif response.status_code == 403:
+            print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Hidden Inventory) how did you even get this error")
+            time.sleep(5)
+            return id2user(uid)
         else:
-            print("Error {response.status_code}")
+            print("Error {response.status_code} {user_id}")
     else:
         data = response.json()
         return(data.get("name", []))
@@ -74,12 +82,16 @@ while True:
                 if check(1567446)==True:
                     print(Fore.LIGHTYELLOW_EX + f"[!] User {user_id} is Verified (Sign) [!]")
                 else:
-                    print(Fore.LIGHTGREEN_EX + f"[✓] User {user_id} is Unverified [✓]")
-                    with open(output_file, "a") as f:
-                        f.write(f"{user_id}\n")
-                    with open(output_file2, "a") as f:
-                        f.write(f"{id2user(user_id)}\n")
-                    print(Fore.LIGHTCYAN_EX + f"[✓] Successfully Saved [✓]")
+                    time.sleep(delay_seconds)
+                    if check(93078560)==True:
+                        print(Fore.LIGHTYELLOW_EX + f"[!] User {user_id} is Verified (KOTBM) [!]")
+                    else:
+                        print(Fore.LIGHTGREEN_EX + f"[✓] User {user_id} is Unverified [✓]")
+                        with open(output_file, "a") as f:
+                            f.write(f"{user_id}\n")
+                        with open(output_file2, "a") as f:
+                            f.write(f"{id2user(user_id)}\n")
+                        print(Fore.LIGHTCYAN_EX + f"[✓] Successfully Saved [✓]")
         user_id += 1
         time.sleep(delay_seconds)
     except Exception as e:
