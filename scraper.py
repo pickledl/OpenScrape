@@ -6,8 +6,8 @@ from colorama import Fore, Style, init
 init()
 
 # ==== CONFIGURATION =====
-start_user_id = 44500281       # Starting user ID - counts up from this id
-item_id = 119934168        # Item ID to check for
+start_user_id = 94111111       # Starting user ID - counts up from this id
+item_id = 302163791        # Item ID to check for
 delay_seconds = 0.5        # Delay between requests to avoid rate limiting; Suggested Delay - 0.5
 # ========================
 
@@ -35,7 +35,6 @@ def check(item_id2):
             return check(item_id2)
         elif response.status_code == 403:
             print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Hidden Inventory)")
-            time.sleep(5)
             return False
         else:
             print(Fore.RED + f"Error {response.status_code} {user_id}")
@@ -61,7 +60,6 @@ def id2user(uid):
             return id2user(uid)
         elif response.status_code == 403:
             print(Fore.LIGHTBLACK_EX + f"[!] Failed for ID {user_id} - HTTP {response.status_code} (Hidden Inventory) how did you even get this error")
-            time.sleep(5)
             return id2user(uid)
         else:
             print("Error {response.status_code} {user_id}")
